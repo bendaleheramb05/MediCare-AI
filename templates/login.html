@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Login - MediCare AI{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <h2>Patient Login</h2>
+  <p class="muted">Access your dashboard, reports and history.</p>
+  <form method="post">
+    <label>Email<input type="email" name="email" required autofocus></label>
+    <label>Password<input type="password" name="password" required></label>
+    <button class="btn full" type="submit">Login</button>
+  </form>
+  <p class="muted center">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Health Assessment - MediCare AI{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h2>Health Assessment Form</h2>
+  <p class="muted">Enter your current health information for an educational AI screening assessment.</p>
+</div></div>
+
+<form method="post" class="card form" id="assessForm">
+  <h3>Basic information</h3>
+  <div class="grid3">
+    <label>Age (years) *<input type="number" name="age" min="1" max="120"
+      value="{{ form.age or patient.age }}" required></label>
+    <label>Gender *
+      <select name="gender" required>
+        <option value="Male" {{ 'selected' if (form.gender or patient.gender) == 'Male' }}>Male</option>
+        <option value="Female" {{ 'selected' if (form.gender or patient.gender) == 'Female' }}>Female</option>
+        <option value="Other" {{ 'selected' if (form.gender or patient.gender) == 'Other' }}>Other</option>
+      </select>
+    </label>
+    <label>Height (cm) *<input type="number" step="0.1" id="height" name="height"
+      min="50" max="250" value="{{ form.height or '' }}" required></label>
+    <label>Weight (kg) *<input type="number" step="0.1" id="weight" name="weight"
+      min="10" max="300" value="{{ form.weight or '' }}" required></label>
+    <label>BMI (calculated from height + weight)<input id="bmi" value="{{ form.bmi or '' }}" readonly placeholder="--"></label>
+  </div>
+
+  <h3>Health parameters</h3>
+  <div class="grid3">
+    <label>Systolic BP (mmHg)<input type="number" name="systolic_bp" min="70" max="250"
+      value="{{ form.systolic_bp or '' }}"><small>Optional. Enter the upper reading if known.</small></label>
+    <label>Diastolic BP (mmHg)<input type="number" name="diastolic_bp" min="40" max="150"
+      value="{{ form.diastolic_bp or '' }}"><small>Optional. Enter the lower reading if known.</small></label>
+    <label>Blood sugar category
+      <select name="glucose_category">
+        <option value="" {{ 'selected' if (form.glucose_category|default('', true))|string == '' }}>Not provided</option>
+        <option value="1" {{ 'selected' if (form.glucose_category|default('', true))|string == '1' }}>Normal</option>
+        <option value="2" {{ 'selected' if (form.glucose_category|default('', true))|string == '2' }}>Above normal</option>
+        <option value="3" {{ 'selected' if (form.glucose_category|default('', true))|string == '3' }}>Well above normal</option>
+      </select>
+      <small>Category only; no mg/dL value is required.</small>
+    </label>
+    <label>Total cholesterol category
+      <select name="cholesterol_category">
+        <option value="" {{ 'selected' if (form.cholesterol_category|default('', true))|string == '' }}>Not provided</option>
+        <option value="1" {{ 'selected' if (form.cholesterol_category|default('', true))|string == '1' }}>Normal</option>
+        <option value="2" {{ 'selected' if (form.cholesterol_category|default('', true))|string == '2' }}>Above normal</option>
+        <option value="3" {{ 'selected' if (form.cholesterol_category|default('', true))|string == '3' }}>Well above normal</option>
+      </select>
+      <small>Category only; no mg/dL value is required.</small>
+    </label>
+  </div>
+  <label class="check"><input type="checkbox" id="bpUnknown" name="bp_unknown" value="1" {{ 'checked' if form.bp_unknown == '1' else '' }}>
+    I don't know my blood pressure
+  </label>
+
+  <h3>Lifestyle &amp; history</h3>
+  <div class="checks">
+    <label class="check"><input type="checkbox" name="smoking" {{ 'checked' if form.smoking == 1 else '' }}> Smokes tobacco</label>
+    <label class="check"><input type="checkbox" name="alcohol" {{ 'checked' if form.alcohol == 1 else '' }}> Consumes alcohol regularly</label>
+    <label class="check"><input type="checkbox" name="physical_activity" {{ 'checked' if form.physical_activity != 0 else '' }}> Physically active (active={{ form.physical_activity }})</label>
+    <label class="check"><input type="checkbox" name="family_history" {{ 'checked' if form.family_history == 1 else '' }}> Family history of heart disease / diabetes / BP</label>
+  </div>
+
+  <h3>Symptoms currently experienced</h3>
+  <p class="muted small">Tick everything that applies. Leave blank if you have no symptoms.</p>
+  <div class="checks">
+    {% for key, (label, weight) in symptoms.items() %}
+      <label class="check"><input type="checkbox" name="symptoms" value="{{ key }}"> {{ label }}</label>
+    {% endfor %}
+  </div>
+
+  <div class="form-actions">
+    <button class="btn" type="submit">Analyse &amp; Generate Report</button>
+    <a class="btn btn-outline" href="{{ url_for('dashboard') }}">Cancel</a>
+  </div>
+  <p class="small muted">By submitting you acknowledge that this tool gives a preliminary
+    AI estimate only and does not replace a qualified doctor.</p>
+</form>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Assessment Result - MediCare AI{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h2>Health Assessment Result</h2>
+  <p class="muted">{{ patient.full_name }} &middot; Report ID MCA-{{ patient.id }}-{{ aid }}
+    &middot; {{ row.created_at|prettydate }}</p></div>
+  <a class="btn" href="{{ url_for('download', aid=aid) }}">Download PDF Report</a>
+</div>
+
+{% if r.urgent %}
+<div class="alert-urgent">
+  <b>Please consider medical review promptly.</b> One or more entered values or symptoms triggered a safety flag. If you have
+  chest pain, severe breathlessness or fainting right now, contact emergency services immediately.
+</div>
+{% endif %}
+
+<div class="result-top">
+  <div class="card gauge-card risk-bg-{{ r.risk_color }}">
+    <div class="gauge">{{ r.risk_score }}<span>%</span></div>
+    <h3>{{ r.risk_level }}</h3>
+    <p class="small muted">{{ r.score_label }}</p>
+    <p class="small muted">Based on the health information provided in this assessment.</p>
+    <div class="scale"><i style="left: {{ r.risk_score }}%"></i></div>
+    <div class="scale-labels"><span>Low</span><span>Moderate</span><span>High</span></div>
+  </div>
+
+  {% if r.conditions %}
+  <div class="card">
+    <h3>Possible Risk Factors to Discuss with a Doctor</h3>
+    <ul class="cond">
+      {% for name, why in r.conditions %}
+        <li><b>{{ name }}</b><span>{{ why }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+{% if r.symptoms %}
+<div class="card">
+  <h3>Symptoms You Reported</h3>
+  <ul class="bullets">{% for s in r.symptoms %}<li>{{ s }}</li>{% endfor %}</ul>
+  <p class="small muted">Persistent, severe, or concerning symptoms should be discussed with a healthcare professional.</p>
+</div>
+{% endif %}
+
+<div class="card">
+  <h3>Your health parameters</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Parameter</th><th>Your value</th><th>Normal range</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>BMI</td><td>{{ r.bmi }} kg/m&sup2;</td><td>18.5 - 24.9</td><td>{{ r.bmi_category }}</td></tr>
+      <tr><td>Blood pressure</td><td>{{ 'Not provided' if row.systolic_bp is none or row.diastolic_bp is none else row.systolic_bp ~ '/' ~ row.diastolic_bp ~ ' mmHg' }}</td>
+        <td>{{ '-' if r.bp_category == 'Not provided' else '&lt; 120/80' }}</td><td>{{ '-' if r.bp_category == 'Not provided' else r.bp_category }}</td></tr>
+      <tr><td>Blood sugar category</td><td>{{ r.glucose_label }}</td><td>Dataset category</td>
+        <td>{{ r.sugar_category }}</td></tr>
+      <tr><td>Total cholesterol category</td><td>{{ r.cholesterol_label }}</td><td>Dataset category</td>
+        <td>{{ r.cholesterol_category }}</td></tr>
+      <tr><td>Heart rate</td><td>Unavailable in dataset</td><td>-</td><td>{{ r.pulse_category }}</td></tr>
+      <tr><td>Height / Weight</td><td>{{ row.height }} cm / {{ row.weight }} kg</td><td>-</td><td>-</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+{% if r.factors %}
+<div class="card">
+  <h3>Key Factors Behind This Result</h3>
+  <ul class="cond">
+    {% for name, why, impact in r.factors %}
+      <li><b>{{ name }}</b><span>{{ why }}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="two-col">
+  <div class="card">
+    <h3>Personalized Educational Guidance</h3>
+    <p class="small muted">Recommendations are based on the health information provided in this assessment.</p>
+    <h4>Why this guidance?</h4>
+    <ul class="bullets">{% for i in r.recommendations.why_guidance %}<li>{{ i }}</li>{% endfor %}</ul>
+    <h4>Recommended food options</h4>
+    <ul class="bullets">{% for i in r.recommendations.diet_guidance %}<li>{{ i }}</li>{% endfor %}</ul>
+    <h4>Recommended Fruits</h4>
+    <ul class="bullets">{% for i in r.recommendations.recommended_fruits %}<li>{{ i }}</li>{% endfor %}</ul>
+    <h4>Recommended Vegetables</h4>
+    <ul class="bullets">{% for i in r.recommendations.recommended_vegetables %}<li>{{ i }}</li>{% endfor %}</ul>
+    <h4>Healthy Protein / Other Foods</h4>
+    <ul class="bullets">{% for i in r.recommendations.healthy_protein_other %}<li>{{ i }}</li>{% endfor %}</ul>
+    <h4>Foods to Limit</h4>
+    <ul class="bullets">{% for i in r.recommendations.foods_to_limit %}<li>{{ i }}</li>{% endfor %}</ul>
+  </div>
+  <div class="card">
+    <h3>Lifestyle guidance</h3>
+    <ul class="bullets">{% for i in r.recommendations.lifestyle %}<li>{{ i }}</li>{% endfor %}</ul>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <h3>When to Seek Professional Advice</h3>
+    <ul class="bullets">{% for i in r.recommendations.monitoring %}<li>{{ i }}</li>{% endfor %}</ul>
+  </div>
+  <div class="card">
+    <h3>Safe general exercise suggestions</h3>
+    <ul class="bullets">{% for a, d in r.exercises %}<li><b>{{ a }}:</b> {{ d }}</li>{% endfor %}</ul>
+  </div>
+</div>
+
+<div class="card">
+  <h3>How this result was produced</h3>
+  <p class="small">A {{ metrics.best_model }} model trained on {{ "{:,}".format(metrics.records) }}
+    records ({{ metrics.accuracy }}% test accuracy, {{ metrics.roc_auc }}% ROC-AUC) produced a model score for cardiovascular-risk screening from your measurements. Reported symptoms
+    were then added as a weighted clinical layer, and every abnormal value was checked against
+    published WHO / AHA / ADA reference ranges to produce the explanation above.</p>
+  <a class="btn" href="{{ url_for('download', aid=aid) }}">Download PDF Report</a>
+  <a class="btn btn-outline" href="{{ url_for('assess') }}">Run another assessment</a>
+</div>
+{% endblock %}

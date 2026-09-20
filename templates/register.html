@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Register - MediCare AI{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <h2>Patient Registration</h2>
+  <p class="muted">Takes less than a minute.</p>
+  <form method="post">
+    <label>Full Name<input name="full_name" value="{{ form.full_name or '' }}" required></label>
+    <label>Email<input type="email" name="email" value="{{ form.email or '' }}" required></label>
+    <div class="row">
+      <label>Age<input type="number" name="age" min="1" max="120" value="{{ form.age or '' }}" required></label>
+      <label>Gender
+        <select name="gender" required>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+    </div>
+    <label>Phone (optional)<input name="phone" value="{{ form.phone or '' }}"></label>
+    <div class="row">
+      <label>Password<input type="password" name="password" minlength="6" required></label>
+      <label>Confirm Password<input type="password" name="confirm_password" required></label>
+    </div>
+    <button class="btn full" type="submit">Create Account</button>
+  </form>
+  <p class="muted center">Already registered? <a href="{{ url_for('login') }}">Login here</a></p>
+</div>
+{% endblock %}

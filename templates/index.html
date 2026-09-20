@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Know your health risk <span class="grad">before</span> it becomes a problem</h1>
+    <p class="lead">MediCare AI takes your basic details, symptoms and health parameters and
+      produces a preliminary risk assessment, an explanation of the factors behind it,
+      general lifestyle advice and a downloadable PDF report.</p>
+    <div class="hero-actions">
+      <a class="btn" href="{{ url_for('register') }}">Start Free Assessment</a>
+      <a class="btn btn-outline" href="{{ url_for('login') }}">I already have an account</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <h3>Model performance</h3>
+    <div class="metric-grid">
+      <div class="metric"><b>{{ metrics.accuracy }}%</b><span>Accuracy</span></div>
+      <div class="metric"><b>{{ metrics.roc_auc }}%</b><span>ROC-AUC</span></div>
+      <div class="metric"><b>{{ metrics.precision }}%</b><span>Precision</span></div>
+      <div class="metric"><b>{{ metrics.recall }}%</b><span>Recall</span></div>
+    </div>
+    <p class="muted small">{{ metrics.best_model }} trained on {{ "{:,}".format(metrics.records) }} records.
+      5-fold CV ROC-AUC {{ metrics.cv_mean_roc_auc }}%.</p>
+  </div>
+</section>
+
+<section class="features">
+  <div class="card"><h3>1. Register</h3><p>Create a patient account with your basic details. Data stays in a local SQLite database.</p></div>
+  <div class="card"><h3>2. Enter parameters</h3><p>Age, height, weight, blood pressure, blood sugar, cholesterol, heart rate, habits and symptoms.</p></div>
+  <div class="card"><h3>3. Get assessment</h3><p>A machine-learning model plus clinical reference ranges produce an explained risk score.</p></div>
+  <div class="card"><h3>4. Download report</h3><p>A complete PDF with parameters, risk, advice, safe exercises and the medical disclaimer.</p></div>
+</section>
+{% endblock %}

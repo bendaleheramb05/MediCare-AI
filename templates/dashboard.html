@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - MediCare AI{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h2>Welcome, {{ patient.full_name }}</h2>
+    <p class="muted">{{ patient.age }} years &middot; {{ patient.gender }} &middot; {{ patient.email }}</p></div>
+  <a class="btn" href="{{ url_for('assess') }}">+ New Assessment</a>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><span>Total assessments</span><b>{{ history|length }}</b></div>
+  <div class="stat"><span>Latest risk score</span>
+    <b class="risk-{{ latest.risk_level.split(' ')[0]|lower if latest else 'low' }}">
+      {{ latest.risk_score ~ '%' if latest else '--' }}</b></div>
+  <div class="stat"><span>Latest risk level</span><b>{{ latest.risk_level if latest else 'Not assessed' }}</b></div>
+  <div class="stat"><span>Latest BMI</span><b>{{ latest.bmi if latest else '--' }}</b></div>
+</div>
+
+{% if trend|length > 1 %}
+<div class="card">
+  <h3>Risk score trend</h3>
+  <div class="trend">
+    {% for t in trend %}
+      <div class="bar-wrap" title="{{ t.date }} - {{ t.score }}%">
+        <div class="bar" style="height: {{ (t.score * 1.4)|round|int }}px"></div>
+        <span>{{ t.date }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="card">
+  <h3>Recent reports</h3>
+  {% if history %}
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Date</th><th>BMI</th><th>BP</th><th>Sugar</th><th>Risk</th><th>Level</th><th></th></tr></thead>
+    <tbody>
+    {% for r in history %}
+      <tr>
+        <td>{{ r.created_at|prettydate }}</td>
+        <td>{{ r.bmi }}</td>
+        <td>{{ r.systolic_bp }}/{{ r.diastolic_bp }}</td>
+        <td>{{ r.blood_sugar }}</td>
+        <td><b class="risk-{{ r.risk_level.split(' ')[0]|lower }}">{{ r.risk_score }}%</b></td>
+        <td><span class="pill pill-{{ r.risk_level.split(' ')[0]|lower }}">{{ r.risk_level }}</span></td>
+        <td class="nowrap">
+          <a class="link" href="{{ url_for('result', aid=r.id) }}">View</a>
+          <a class="link" href="{{ url_for('download', aid=r.id) }}">PDF</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+    <p class="muted">No assessments yet. Click <b>New Assessment</b> to create your first report.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>AI model details</h3>
+  <div class="metric-grid wide">
+    <div class="metric"><b>{{ metrics.best_model }}</b><span>Algorithm</span></div>
+    <div class="metric"><b>{{ metrics.accuracy }}%</b><span>Accuracy</span></div>
+    <div class="metric"><b>{{ metrics.precision }}%</b><span>Precision</span></div>
+    <div class="metric"><b>{{ metrics.recall }}%</b><span>Recall</span></div>
+    <div class="metric"><b>{{ metrics.f1_score }}%</b><span>F1-score</span></div>
+    <div class="metric"><b>{{ metrics.roc_auc }}%</b><span>ROC-AUC</span></div>
+  </div>
+  <p class="muted small">Dataset: {{ metrics.dataset }} &middot; {{ "{:,}".format(metrics.records) }} records
+    ({{ "{:,}".format(metrics.train_size) }} train / {{ "{:,}".format(metrics.test_size) }} test) &middot;
+    5-fold CV: {{ metrics.cv_mean_roc_auc }}% &plusmn; {{ metrics.cv_std_roc_auc }}</p>
+  <h4>Top contributing features</h4>
+  <div class="imp">
+    {% for f, v in metrics.feature_importance.items() %}
+      <div class="imp-row"><span>{{ f }}</span>
+        <div class="imp-bar"><i style="width: {{ (v * 3.5)|round|int }}%"></i></div><b>{{ v }}%</b></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

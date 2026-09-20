@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}History - MediCare AI{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h2>Assessment History</h2>
+  <p class="muted">All reports generated for {{ patient.full_name }}.</p></div>
+  <a class="btn" href="{{ url_for('assess') }}">+ New Assessment</a>
+</div>
+
+<div class="card">
+{% if history %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>#</th><th>Date</th><th>Age</th><th>BMI</th><th>BP</th><th>Sugar</th>
+    <th>HR</th><th>Risk score</th><th>Level</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for r in history %}
+  <tr>
+    <td>{{ r.id }}</td>
+    <td>{{ r.created_at|prettydate }}</td>
+    <td>{{ r.age }}</td>
+    <td>{{ r.bmi }}</td>
+    <td>{{ r.systolic_bp }}/{{ r.diastolic_bp }}</td>
+    <td>{{ r.blood_sugar }}</td>
+    <td>{{ r.heart_rate }}</td>
+    <td><b class="risk-{{ r.risk_level.split(' ')[0]|lower }}">{{ r.risk_score }}%</b></td>
+    <td><span class="pill pill-{{ r.risk_level.split(' ')[0]|lower }}">{{ r.risk_level }}</span></td>
+    <td class="nowrap">
+      <a class="link" href="{{ url_for('result', aid=r.id) }}">View</a>
+      <a class="link" href="{{ url_for('download', aid=r.id) }}">PDF</a>
+      <form method="post" action="{{ url_for('delete', aid=r.id) }}" style="display:inline"
+        onsubmit="return confirm('Delete this report permanently?')">
+        <button class="link danger" type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+  <p class="muted">No assessments recorded yet.</p>
+{% endif %}
+</div>
+{% endblock %}
