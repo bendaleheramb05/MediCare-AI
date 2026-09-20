@@ -1,42 +1,21 @@
-# MediCare AI — Preliminary Health-Risk Screening Demo
+# 🏥MediCare AI — Preliminary Health-Risk Screening Demo
 
 MediCare AI is an educational Flask + Machine Learning project for demonstrating how a web application can collect health-related inputs, run a machine-learning model, explain simple rule-based flags, store assessment history, and generate a PDF report.
 
 > **Important:** This is a student/demo project, not a medical device or diagnostic system. Its score does not establish whether a person has a disease and must not be used to choose or change treatment.
 
-## Main features
+## ✨Main features
+- 👤 Patient registration and login with hashed passwords
+- 🩺 Health assessment form with BMI, blood pressure, glucose, cholesterol, heart rate and lifestyle inputs
+- 🤖 ML screening model using Logistic Regression and Random Forest
+- 🚩 Explainable rule-based flags for entered measurements
+- ❤️ Symptom indicator layer clearly separated from the ML model
+- 📋 Assessment history stored in SQLite
+- 📄 Downloadable PDF report
+- 🔗 JSON endpoints for model metrics and prediction demos
+- ✅ Server-side input validation and safer Flask configuration
 
-- Patient registration and login with hashed passwords
-- Health assessment form with BMI, blood pressure, glucose, cholesterol, heart rate and lifestyle inputs
-- ML screening model using Logistic Regression and Random Forest
-- Explainable rule-based flags for entered measurements
-- Symptom indicator layer clearly separated from the ML model
-- Assessment history stored in SQLite
-- Downloadable PDF report
-- JSON endpoints for model metrics and prediction demos
-- Server-side input validation and safer Flask configuration
-
-## Project structure
-
-```text
-medicare_ai/
-├── app.py
-├── predictor.py
-├── database.py
-├── pdf_report.py
-├── requirements.txt
-├── data/
-│   └── cardio_train.csv       # optional public dataset; not included
-├── ml/
-│   ├── train_model.py
-│   ├── risk_model.pkl
-│   └── metrics.json
-├── templates/
-├── static/
-└── sample_report.pdf
-```
-
-## Dataset and model transparency
+## 📊Dataset and model transparency
 
 The preferred training source is the public Cardiovascular Disease dataset (`cardio_train.csv`). The CSV is **not bundled with this project**.
 
@@ -48,7 +27,7 @@ The generated `ml/metrics.json` records which dataset type was actually used. Th
 
 The model is selected using ROC-AUC on the held-out test set rather than simply choosing the highest accuracy. The saved model output is used as one component of an educational screening score; it is not presented as a clinically validated probability.
 
-## Installation — Windows PowerShell
+## 💻Installation — Windows PowerShell
 
 ```powershell
 python -m venv .venv
@@ -72,7 +51,7 @@ If PowerShell blocks activation, you can still run the environment's Python dire
 .\.venv\Scripts\python.exe app.py
 ```
 
-## Optional public dataset
+## 📂Optional public dataset
 
 Place the semicolon-separated `cardio_train.csv` file inside `data/` and run:
 
@@ -82,7 +61,7 @@ python ml/train_model.py
 
 The application will then report `public_cardio_train` in `ml/metrics.json`.
 
-## Environment variables
+## 🔐Environment variables
 
 For local development, the application has a development fallback secret key. For a real deployment, set your own secret key instead:
 
@@ -95,7 +74,7 @@ python app.py
 
 Never commit a production secret key or patient database to GitHub.
 
-## Safety design
+## 🛡️Safety design
 
 - The UI and PDF explicitly state that the result is not a diagnosis.
 - The model output is not described as a clinically validated probability.
@@ -104,7 +83,7 @@ Never commit a production secret key or patient database to GitHub.
 - Acute symptom flags are intended to encourage appropriate medical attention, not to diagnose an emergency.
 - Server-side input validation prevents obviously invalid values from reaching the model.
 
-## Limitations
+## ⚠️Limitations
 
 1. The public cardiovascular dataset does not contain every clinical variable that would be needed for comprehensive cardiovascular assessment.
 2. The application is not externally validated or calibrated for a specific patient population.
@@ -112,8 +91,102 @@ Never commit a production secret key or patient database to GitHub.
 4. The symptom indicator weights are heuristic and are not a validated clinical scoring system.
 5. A single web-form assessment cannot replace examination, history, laboratory testing or clinician interpretation.
 
-## Viva explanation
+## 🎓Viva explanation
 
 **Input → preprocessing → ML model → model score → simple rule-based flags + symptom indicator → composite screening score → report/history/PDF.**
 
 If asked whether the project diagnoses disease, the correct answer is: **No. It is an educational preliminary screening application, and its outputs require professional interpretation.**
+
+# 🏥 MediCare AI — Health Risk Screening Demo
+
+MediCare AI is an educational **Flask + Machine Learning** web application developed to demonstrate how health-related inputs can be collected, processed, analyzed using machine learning, and presented through an easy-to-understand web interface.
+
+The application provides a preliminary health-risk screening score, simple rule-based health indicators, assessment history, and downloadable PDF reports.
+
+> ⚠️ **Important:** MediCare AI is a student/educational demo project. It is **not a medical device, diagnostic system, or substitute for professional medical advice**. The generated score does not confirm the presence or absence of any disease and must not be used to start, stop, or change medical treatment.
+
+---
+
+## ✨ Features
+
+- 👤 Patient registration and login
+- 🔐 Password hashing and session-based authentication
+- 🩺 Health assessment form
+- 📊 BMI, blood pressure, glucose, cholesterol and heart-rate inputs
+- 🧠 Machine Learning based screening model
+- 🌳 Logistic Regression and Random Forest models
+- 🚩 Rule-based health indicators
+- ❤️ Symptom indicator layer
+- 📋 Assessment history
+- 📄 Downloadable PDF health report
+- 🔗 JSON endpoints for metrics and prediction demonstrations
+- ✅ Server-side input validation
+- 💾 SQLite database for storing assessment history
+- 🖥️ Flask-based web interface
+
+---
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|------------|---------|
+| Python | Core programming language |
+| Flask | Web application framework |
+| Pandas | Data processing |
+| NumPy | Numerical operations |
+| Scikit-learn | Machine Learning |
+| Joblib | Saving and loading ML models |
+| ReportLab | PDF report generation |
+| SQLite | Database |
+| HTML/CSS | Frontend |
+| JavaScript | Client-side functionality |
+
+---
+
+## 📁 Project Structure
+
+```text
+MediCare-AI/
+│
+├── app.py
+├── predictor.py
+├── database.py
+├── pdf_report.py
+├── requirements.txt
+├── README.md
+│
+├── data/
+│   ├── cardio_train.csv
+│   ├── heart.csv
+│   └── README.txt
+│
+├── ml/
+│   ├── train_model.py
+│   ├── risk_model.pkl
+│   └── metrics.json
+│
+├── templates/
+│   └── HTML template files
+│
+├── static/
+│   └── css/
+│       └── style.css
+│
+└── sample_report.pdf
+
+## 👨‍💻 Author
+
+**Heramb Bendale**
+
+- GitHub: [github.com/bendaleheramb05](https://github.com/bendaleheramb05)
+
+## 👨‍💻 Project
+
+**Project Name:** MediCare AI  
+**Developed By:** Heramb Bendale  
+**Type:** Educational Machine Learning + Flask Web Application  
+**Purpose:** Health-risk screening demonstration
+
+### 🔗 GitHub
+
+[View MediCare AI on GitHub](https://github.com/bendaleheramb05/Medicare-AI)
