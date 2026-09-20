@@ -1,0 +1,66 @@
+{
+  "best_model": "Random Forest",
+  "dataset": "Public Cardiovascular Disease dataset",
+  "dataset_type": "public_cardio_train",
+  "records": 68633,
+  "train_size": 54906,
+  "test_size": 13727,
+  "features": [
+    "age",
+    "gender",
+    "bmi",
+    "ap_hi",
+    "ap_lo",
+    "cholesterol",
+    "glucose",
+    "smoke",
+    "alcohol",
+    "active"
+  ],
+  "all_models": {
+    "Logistic Regression": {
+      "accuracy": 72.32,
+      "precision": 74.88,
+      "recall": 66.28,
+      "f1_score": 70.32,
+      "roc_auc": 78.6
+    },
+    "Random Forest": {
+      "accuracy": 72.89,
+      "precision": 75.53,
+      "recall": 66.89,
+      "f1_score": 70.95,
+      "roc_auc": 79.51
+    }
+  },
+  "cv_mean_roc_auc": 79.97,
+  "cv_std_roc_auc": 0.39,
+  "accuracy": 72.89,
+  "precision": 75.53,
+  "recall": 66.89,
+  "f1_score": 70.95,
+  "roc_auc": 79.51,
+  "selection_metric": "ROC-AUC",
+  "confusion_matrix": [
+    [
+      5463,
+      1472
+    ],
+    [
+      2249,
+      4543
+    ]
+  ],
+  "feature_importance": {
+    "ap_hi": 49.7,
+    "ap_lo": 22.11,
+    "age": 12.06,
+    "cholesterol": 9.35,
+    "bmi": 4.55,
+    "glucose": 1.0,
+    "active": 0.62,
+    "gender": 0.23,
+    "smoke": 0.22,
+    "alcohol": 0.17
+  }
+}
