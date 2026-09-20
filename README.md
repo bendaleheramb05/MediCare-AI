@@ -1,4 +1,4 @@
-# 🏥MediCare AI — Preliminary Health-Risk Screening Demo
+# 🏥MediCare AI — Health Risk Prediction System
 
 MediCare AI is an educational Flask + Machine Learning project for demonstrating how a web application can collect health-related inputs, run a machine-learning model, explain simple rule-based flags, store assessment history, and generate a PDF report.
 
